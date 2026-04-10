@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -68,6 +68,16 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+}
+
+@layer components {
+  .dashboard-section-title {
+    @apply text-xs font-bold uppercase tracking-wide text-muted-foreground;
+  }
+
+  .dashboard-panel-title {
+    @apply text-sm font-bold text-foreground;
   }
 }

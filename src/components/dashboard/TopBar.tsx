@@ -1,10 +1,27 @@
-import { Bell, ChevronDown, Search } from "lucide-react";
+import { Bell, ChevronDown } from "lucide-react";
+import type { Session } from "@/types";
 
-export default function TopBar() {
+interface TopBarProps {
+  session?: Session;
+}
+
+function formatTimeLeft(endsAt: string): string {
+  const end = new Date(endsAt).getTime();
+  const now = Date.now();
+  const diff = Math.max(0, Math.floor((end - now) / 1000));
+  const hours = Math.floor(diff / 3600);
+  const minutes = Math.floor((diff % 3600) / 60);
+  const seconds = diff % 60;
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+}
+
+export default function TopBar({ session }: TopBarProps) {
   return (
     <header className="h-14 bg-card border-b border-border flex items-center justify-between px-6">
       <div className="flex items-center gap-4">
-        <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
+        <h1 className="text-lg font-extrabold text-foreground">Dashboard</h1>
       </div>
 
       <div className="flex items-center gap-3">
@@ -28,9 +45,11 @@ export default function TopBar() {
         {/* Session badge */}
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Session active</span>
-          <span className="text-sm font-mono font-semibold text-foreground">02:34:12</span>
+          <span className="text-sm font-mono font-semibold text-foreground">
+            {session ? formatTimeLeft(session.endsAt) : "--:--:--"}
+          </span>
           <span className="px-2.5 py-0.5 rounded-full bg-success text-success-foreground text-xs font-medium">
-            Live
+            {session?.isLive ? "Live" : "Idle"}
           </span>
         </div>
 

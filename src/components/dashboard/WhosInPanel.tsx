@@ -1,15 +1,9 @@
 import { Search } from "lucide-react";
+import type { Student } from "@/types";
 
-const people = [
-  { name: "Emma Wilson", time: "8:45 am", status: "in" },
-  { name: "Liam Chen", time: "8:50 am", status: "in" },
-  { name: "Sofia Garcia", time: "9:15 am", status: "late" },
-  { name: "Marcus Rivera", time: "9:12 am", status: "flagged" },
-  { name: "Olivia Martin", time: "8:42 am", status: "in" },
-  { name: "Noah Kim", time: "8:48 am", status: "in" },
-  { name: "Aisha Khan", time: "9:28 am", status: "flagged" },
-  { name: "Devon Lee", time: "8:55 am", status: "in" },
-];
+interface WhosInPanelProps {
+  students: Student[];
+}
 
 const statusDot = (status: string) => {
   const colors: Record<string, string> = {
@@ -20,22 +14,37 @@ const statusDot = (status: string) => {
   return colors[status] || "bg-chart-gray";
 };
 
-export default function WhosInPanel() {
+export default function WhosInPanel({ students }: WhosInPanelProps) {
+  const inCount = students.filter((student) => student.attendanceStatus === "Present").length;
+  const lateCount = students.filter((student) => student.attendanceStatus === "Late").length;
+  const outCount = students.filter((student) => student.attendanceStatus === "Absent").length;
+  const people = students.slice(0, 18).map((student) => ({
+    id: student.id,
+    name: student.name,
+    time: student.lastSeenAt,
+    status:
+      student.attendanceStatus === "Present"
+        ? "in"
+        : student.attendanceStatus === "Late"
+          ? "late"
+          : "flagged",
+  }));
+
   return (
     <div className="bg-card border border-border rounded-lg">
       <div className="px-4 py-3 border-b border-border">
-        <h3 className="text-sm font-semibold text-foreground text-center">Who's in/out</h3>
+        <h3 className="dashboard-panel-title text-center">Who's in/out</h3>
         <div className="flex items-center justify-center gap-4 mt-2 text-center">
           <div>
-            <p className="text-lg font-bold text-success">231</p>
+            <p className="text-lg font-bold text-success">{inCount}</p>
             <p className="text-[10px] uppercase text-muted-foreground font-semibold">In</p>
           </div>
           <div>
-            <p className="text-lg font-bold text-warning">3</p>
+            <p className="text-lg font-bold text-warning">{lateCount}</p>
             <p className="text-[10px] uppercase text-muted-foreground font-semibold">Late</p>
           </div>
           <div>
-            <p className="text-lg font-bold text-destructive">14</p>
+            <p className="text-lg font-bold text-destructive">{outCount}</p>
             <p className="text-[10px] uppercase text-muted-foreground font-semibold">Out</p>
           </div>
         </div>
@@ -55,7 +64,7 @@ export default function WhosInPanel() {
       <div className="divide-y divide-border max-h-[360px] overflow-y-auto">
         {people.map((p) => (
           <div
-            key={p.name}
+            key={p.id}
             className="flex items-center gap-3 px-4 py-2.5 hover:bg-muted/50 transition-colors cursor-pointer"
           >
             <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground">

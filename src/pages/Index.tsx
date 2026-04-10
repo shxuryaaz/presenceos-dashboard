@@ -8,30 +8,36 @@ import EngagementChart from "@/components/dashboard/EngagementChart";
 import ActivityPanel from "@/components/dashboard/ActivityPanel";
 import WhosInPanel from "@/components/dashboard/WhosInPanel";
 import StudentTable from "@/components/dashboard/StudentTable";
+import { useDashboardData } from "@/hooks/useDashboardData";
+import { getRiskStudents } from "@/lib/scoring";
 
 export default function Index() {
+  const { data } = useDashboardData();
+  const students = data?.students ?? [];
+  const riskStudents = getRiskStudents(students);
+
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar />
+        <TopBar session={data?.session} />
         <div className="flex-1 flex overflow-hidden">
           {/* Main content */}
           <main className="flex-1 overflow-y-auto p-5 space-y-4">
-            <AlertBanner />
-            <MetricsRow />
-            <UpcomingReminders />
+            <AlertBanner riskStudents={riskStudents} />
+            <MetricsRow students={students} engagement={data?.engagement} />
+            <UpcomingReminders reminders={data?.reminders ?? []} />
             <div className="grid grid-cols-2 gap-4">
-              <AttendanceChart />
-              <EngagementChart />
+              <AttendanceChart dailyAttendance={data?.engagement.daily ?? []} />
+              <EngagementChart engagement={data?.engagement} />
             </div>
-            <ActivityPanel />
-            <StudentTable />
+            <ActivityPanel riskStudents={riskStudents} />
+            <StudentTable students={students} />
           </main>
 
           {/* Right sidebar - Who's in */}
           <aside className="w-[280px] border-l border-border overflow-y-auto flex-shrink-0">
-            <WhosInPanel />
+            <WhosInPanel students={students} />
           </aside>
         </div>
       </div>

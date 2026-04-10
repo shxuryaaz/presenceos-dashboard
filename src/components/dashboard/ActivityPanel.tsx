@@ -1,12 +1,9 @@
-import { AlertTriangle, Clock, MapPin, QrCode, Eye } from "lucide-react";
+import { Eye, MapPin, QrCode } from "lucide-react";
+import type { Student } from "@/types";
 
-const flaggedStudents = [
-  { name: "Marcus Rivera", score: 32, reason: "GPS mismatch", icon: MapPin, time: "9:12 am" },
-  { name: "Aisha Khan", score: 45, reason: "Low engagement", icon: Eye, time: "9:28 am" },
-  { name: "Tyler Brooks", score: 51, reason: "QR not scanned", icon: QrCode, time: "9:35 am" },
-  { name: "Priya Sharma", score: 38, reason: "Late + GPS issue", icon: MapPin, time: "9:41 am" },
-  { name: "Devon Lee", score: 55, reason: "Engagement drop", icon: Eye, time: "10:02 am" },
-];
+interface ActivityPanelProps {
+  riskStudents: Student[];
+}
 
 const statusColor = (score: number) => {
   if (score < 40) return "text-destructive";
@@ -14,27 +11,48 @@ const statusColor = (score: number) => {
   return "text-success";
 };
 
-const bgColor = (score: number) => {
-  if (score < 40) return "bg-destructive";
-  if (score < 60) return "bg-warning";
-  return "bg-success";
-};
+function getReason(student: Student): "GPS mismatch" | "QR not scanned" | "Low engagement" {
+  if (!student.geoVerified) return "GPS mismatch";
+  if (!student.qrVerified) return "QR not scanned";
+  return "Low engagement";
+}
 
-export default function ActivityPanel() {
+function getIcon(reason: string) {
+  if (reason === "GPS mismatch") return MapPin;
+  if (reason === "QR not scanned") return QrCode;
+  return Eye;
+}
+
+export default function ActivityPanel({ riskStudents }: ActivityPanelProps) {
+  const flaggedStudents = riskStudents.slice(0, 5).map((student) => {
+    const reason = getReason(student);
+    return {
+      id: student.id,
+      name: student.name,
+      score: Math.min(student.trustScore, student.engagementScore),
+      reason,
+      icon: getIcon(reason),
+      time: student.lastSeenAt,
+    };
+  });
+
+  const criticalCount = flaggedStudents.filter((student) => student.score < 40).length;
+  const warningCount = flaggedStudents.filter((student) => student.score >= 40 && student.score < 60).length;
+
   return (
     <div className="bg-card border border-border rounded-lg">
       <div className="px-4 py-3 border-b border-border">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <h3 className="dashboard-section-title">
             Flagged Students
           </h3>
           <div className="flex items-center gap-3 text-xs font-semibold">
             <span className="text-destructive">
-              {flaggedStudents.filter((s) => s.score < 40).length}
+              {criticalCount}
               <span className="text-muted-foreground font-normal ml-1">Critical</span>
             </span>
             <span className="text-warning">
-              {flaggedStudents.filter((s) => s.score >= 40 && s.score < 60).length}
+              {warningCount}
               <span className="text-muted-foreground font-normal ml-1">Warning</span>
             </span>
           </div>
@@ -44,7 +62,7 @@ export default function ActivityPanel() {
       <div className="divide-y divide-border">
         {flaggedStudents.map((s) => (
           <div
-            key={s.name}
+            key={s.id}
             className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors cursor-pointer"
           >
             <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground">

@@ -1,15 +1,9 @@
-const students = [
-  { name: "Emma Wilson", status: "Present", trust: 92, engagement: 95, avatar: "EW" },
-  { name: "Liam Chen", status: "Present", trust: 88, engagement: 91, avatar: "LC" },
-  { name: "Sofia Garcia", status: "Late", trust: 74, engagement: 82, avatar: "SG" },
-  { name: "Marcus Rivera", status: "Present", trust: 32, engagement: 45, avatar: "MR" },
-  { name: "Aisha Khan", status: "Present", trust: 45, engagement: 38, avatar: "AK" },
-  { name: "Tyler Brooks", status: "Absent", trust: 51, engagement: 0, avatar: "TB" },
-  { name: "Priya Sharma", status: "Late", trust: 38, engagement: 52, avatar: "PS" },
-  { name: "Devon Lee", status: "Present", trust: 55, engagement: 61, avatar: "DL" },
-  { name: "Olivia Martin", status: "Present", trust: 96, engagement: 98, avatar: "OM" },
-  { name: "Noah Kim", status: "Present", trust: 89, engagement: 87, avatar: "NK" },
-];
+import { useMemo, useState } from "react";
+import type { Student } from "@/types";
+
+interface StudentTableProps {
+  students: Student[];
+}
 
 const statusBadge = (status: string) => {
   const styles: Record<string, string> = {
@@ -38,17 +32,26 @@ const trustLabelColor = (score: number) => {
   return "text-destructive";
 };
 
-export default function StudentTable() {
+export default function StudentTable({ students }: StudentTableProps) {
+  const [search, setSearch] = useState("");
+  const filteredStudents = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return students;
+    return students.filter((student) => student.name.toLowerCase().includes(query));
+  }, [search, students]);
+
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
       <div className="px-5 py-3 border-b border-border flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <h3 className="dashboard-section-title">
           Students
         </h3>
         <div className="flex items-center gap-2">
           <input
             type="text"
             placeholder="Search students..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
             className="text-sm border border-border rounded-md px-3 py-1.5 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring w-52"
           />
         </div>
@@ -72,9 +75,9 @@ export default function StudentTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {students.map((s) => (
+            {filteredStudents.map((s) => (
               <tr
-                key={s.name}
+                key={s.id}
                 className="hover:bg-muted/30 transition-colors cursor-pointer"
               >
                 <td className="px-5 py-3">
@@ -88,23 +91,23 @@ export default function StudentTable() {
                 <td className="px-5 py-3">
                   <span
                     className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${statusBadge(
-                      s.status
+                      s.attendanceStatus
                     )}`}
                   >
-                    {s.status}
+                    {s.attendanceStatus}
                   </span>
                 </td>
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
                     <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${trustColor(s.trust)}`}
-                        style={{ width: `${s.trust}%` }}
+                        className={`h-full rounded-full ${trustColor(s.trustScore)}`}
+                        style={{ width: `${s.trustScore}%` }}
                       />
                     </div>
-                    <span className="text-xs font-medium text-foreground w-7">{s.trust}</span>
-                    <span className={`text-xs font-medium ${trustLabelColor(s.trust)}`}>
-                      {trustLabel(s.trust)}
+                    <span className="text-xs font-medium text-foreground w-7">{s.trustScore}</span>
+                    <span className={`text-xs font-medium ${trustLabelColor(s.trustScore)}`}>
+                      {trustLabel(s.trustScore)}
                     </span>
                   </div>
                 </td>
@@ -112,11 +115,11 @@ export default function StudentTable() {
                   <div className="flex items-center gap-2">
                     <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${trustColor(s.engagement)}`}
-                        style={{ width: `${s.engagement}%` }}
+                        className={`h-full rounded-full ${trustColor(s.engagementScore)}`}
+                        style={{ width: `${s.engagementScore}%` }}
                       />
                     </div>
-                    <span className="text-xs font-medium text-foreground">{s.engagement}%</span>
+                    <span className="text-xs font-medium text-foreground">{s.engagementScore}%</span>
                   </div>
                 </td>
               </tr>

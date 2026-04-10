@@ -41,11 +41,13 @@ export default function Sidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-2 px-5 py-4 border-b border-sidebar-border">
-        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-          <span className="text-primary-foreground font-bold text-sm">P</span>
-        </div>
+        <img
+          src="/presence-os-logo.png"
+          alt="Presence OS logo"
+          className="w-8 h-8 rounded-md object-cover"
+        />
         {!collapsed && (
-          <span className="text-foreground font-semibold text-base tracking-tight">PresenceOS</span>
+          <span className="text-foreground font-extrabold text-base tracking-tight">Presence OS</span>
         )}
       </div>
 
@@ -68,7 +70,7 @@ export default function Sidebar() {
         {/* Settings section */}
         {!collapsed && (
           <div className="pt-4 pb-1 px-3">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="dashboard-section-title">
               Settings
             </span>
           </div>
