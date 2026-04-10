@@ -10,6 +10,7 @@ const statusBadge = (status: string) => {
     Present: "bg-success/10 text-success",
     Late: "bg-warning/10 text-warning",
     Absent: "bg-destructive/10 text-destructive",
+    "Not Marked": "bg-muted text-muted-foreground",
   };
   return styles[status] || "";
 };

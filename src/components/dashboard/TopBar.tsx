@@ -1,8 +1,10 @@
 import { Bell, ChevronDown } from "lucide-react";
 import type { Session } from "@/types";
+import type { ReactNode } from "react";
 
 interface TopBarProps {
   session?: Session;
+  action?: ReactNode;
 }
 
 function formatTimeLeft(endsAt: string): string {
@@ -17,7 +19,7 @@ function formatTimeLeft(endsAt: string): string {
     .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export default function TopBar({ session }: TopBarProps) {
+export default function TopBar({ session, action }: TopBarProps) {
   return (
     <header className="h-14 bg-card border-b border-border flex items-center justify-between px-6">
       <div className="flex items-center gap-4">
@@ -56,11 +58,12 @@ export default function TopBar({ session }: TopBarProps) {
         <div className="w-px h-6 bg-border mx-1" />
 
         {/* Actions */}
+        {action}
         <button className="p-2 hover:bg-muted rounded-md transition-colors">
           <Bell className="w-4.5 h-4.5 text-muted-foreground" />
         </button>
         <div className="w-8 h-8 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center text-xs font-semibold text-primary cursor-pointer">
-          JD
+          SS
         </div>
       </div>
     </header>

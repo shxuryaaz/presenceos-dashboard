@@ -10,6 +10,7 @@ const statusDot = (status: string) => {
     in: "bg-success",
     late: "bg-warning",
     flagged: "bg-destructive",
+    out: "bg-destructive",
   };
   return colors[status] || "bg-chart-gray";
 };
@@ -27,7 +28,7 @@ export default function WhosInPanel({ students }: WhosInPanelProps) {
         ? "in"
         : student.attendanceStatus === "Late"
           ? "late"
-          : "flagged",
+          : "out",
   }));
 
   return (

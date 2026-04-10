@@ -1,10 +1,12 @@
-export type AttendanceStatus = "Present" | "Late" | "Absent";
+export type AttendanceStatus = "Present" | "Late" | "Absent" | "Not Marked";
+export type UserRole = "Teacher" | "Student";
 
 export interface Student {
   id: string;
   sessionId: string;
   name: string;
   avatar: string;
+  role: "Student";
   attendanceStatus: AttendanceStatus;
   geoVerified: boolean;
   qrVerified: boolean;
@@ -22,6 +24,9 @@ export interface Session {
   startedAt: string;
   endsAt: string;
   isLive: boolean;
+  active: boolean;
+  qrToken: string;
+  expiresAt: string;
 }
 
 export interface AttendanceRecord {
@@ -74,4 +79,11 @@ export interface DashboardData {
   engagement: EngagementData;
   riskFlags: RiskFlag[];
   reminders: Reminder[];
+}
+
+export interface AuthUser {
+  role: UserRole;
+  name: string;
+  email?: string;
+  studentId?: string;
 }

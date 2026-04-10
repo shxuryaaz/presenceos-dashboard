@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -6,7 +7,6 @@ import {
   BarChart3,
   Settings,
   Clock,
-  MapPin,
   Calendar,
   Briefcase,
   Building2,
@@ -16,18 +16,17 @@ import {
 } from "lucide-react";
 
 const mainNav = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: CalendarCheck, label: "Sessions" },
-  { icon: Users, label: "Attendance" },
-  { icon: BarChart3, label: "Analytics" },
-  { icon: MapPin, label: "Live Locations" },
+  { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
+  { icon: CalendarCheck, label: "Sessions", to: "/sessions" },
+  { icon: Users, label: "Attendance", to: "/attendance" },
+  { icon: BarChart3, label: "Analytics", to: "/analytics" },
 ];
 
 const settingsNav = [
-  { icon: Clock, label: "Time Tracking" },
-  { icon: Calendar, label: "Schedules" },
-  { icon: Briefcase, label: "Activities & Projects" },
-  { icon: Building2, label: "Organisation" },
+  { icon: Clock, label: "Time Tracking", to: "/time-tracking" },
+  { icon: Calendar, label: "Schedules", to: "/schedules" },
+  { icon: Briefcase, label: "Activities & Projects", to: "/activities-projects" },
+  { icon: Building2, label: "Organisation", to: "/organisation" },
 ];
 
 export default function Sidebar() {
@@ -54,17 +53,20 @@ export default function Sidebar() {
       {/* Main Nav */}
       <nav className="flex-1 py-3 px-3 space-y-0.5 overflow-y-auto">
         {mainNav.map((item) => (
-          <button
+          <NavLink
             key={item.label}
-            className={`flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              item.active
-                ? "text-sidebar-active bg-primary/8"
-                : "text-sidebar-foreground hover:bg-sidebar-hover"
-            }`}
+            to={item.to}
+            className={({ isActive }) =>
+              `flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                isActive
+                  ? "text-sidebar-active bg-primary/8"
+                  : "text-sidebar-foreground hover:bg-sidebar-hover"
+              }`
+            }
           >
             <item.icon className="w-[18px] h-[18px] flex-shrink-0" />
             {!collapsed && <span>{item.label}</span>}
-          </button>
+          </NavLink>
         ))}
 
         {/* Settings section */}
@@ -76,18 +78,34 @@ export default function Sidebar() {
           </div>
         )}
         {settingsNav.map((item) => (
-          <button
+          <NavLink
             key={item.label}
-            className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-sidebar-foreground hover:bg-sidebar-hover transition-colors"
+            to={item.to}
+            className={({ isActive }) =>
+              `flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                isActive
+                  ? "text-sidebar-active bg-primary/8"
+                  : "text-sidebar-foreground hover:bg-sidebar-hover"
+              }`
+            }
           >
             <item.icon className="w-[18px] h-[18px] flex-shrink-0" />
             {!collapsed && <span>{item.label}</span>}
-          </button>
+          </NavLink>
         ))}
-        <button className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-sidebar-foreground hover:bg-sidebar-hover transition-colors">
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            `flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              isActive
+                ? "text-sidebar-active bg-primary/8"
+                : "text-sidebar-foreground hover:bg-sidebar-hover"
+            }`
+          }
+        >
           <Settings className="w-[18px] h-[18px] flex-shrink-0" />
           {!collapsed && <span>Settings</span>}
-        </button>
+        </NavLink>
       </nav>
 
       {/* User + Collapse */}
@@ -98,8 +116,10 @@ export default function Sidebar() {
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Jane Doe</p>
-              <p className="text-xs text-muted-foreground truncate">Oakwood Academy</p>
+              <p className="text-sm font-medium text-foreground truncate">Shaurya Singh</p>
+              <p className="text-xs text-muted-foreground truncate">
+                Noida Institute of Engineering and Technology
+              </p>
             </div>
           )}
         </div>
